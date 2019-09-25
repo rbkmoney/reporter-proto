@@ -1,4 +1,4 @@
-{application, fistful_reporter_proto, [
+{application, reporter_proto, [
     {description, "Thrift proto for fistful reporter"},
     {vsn, "0.1.0"},
     {applications, [
