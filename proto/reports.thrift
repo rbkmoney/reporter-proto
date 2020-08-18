@@ -10,7 +10,7 @@ typedef domain.PartyID PartyID
 typedef domain.ShopID ShopID
 typedef domain.FileID FileID
 typedef i64 ReportID
-typedef string ReportType
+typedef string ReportTypeLegacy
 typedef string URL
 
 /**
@@ -33,6 +33,15 @@ exception ShopNotFound {}
 exception ReportNotFound {}
 exception FileNotFound {}
 
+/**
+* Типы отчетов
+*/
+enum ReportType {
+    provision_of_service
+    payment_registry
+    payment_registry_by_payout
+}
+
 struct ReportRequest {
     1: required PartyID party_id
     2: required ReportTimeRange time_range
@@ -47,8 +56,11 @@ struct ReportRequest {
 
 struct StatReportRequest {
     1: required ReportRequest request
-    2: optional list<ReportType> report_types
     3: optional string continuation_token
+    4: optional list<ReportType> report_types
+
+    // drop
+    2: optional list<ReportTypeLegacy> report_types_legacy
 }
 
 /**
@@ -84,10 +96,13 @@ struct Report {
     2: required PartyID party_id
     3: required ReportTimeRange time_range
     4: required Timestamp created_at
-    5: required ReportType report_type
     6: required ReportStatus status
     7: optional list<FileMeta> files
     8: optional ShopID shop_id
+    9: optional ReportType report_type
+
+    // drop
+    5: optional ReportTypeLegacy report_type_legacy
 }
 
 /**
@@ -131,7 +146,13 @@ service Reporting {
   * ShopNotFound, если shop не найден
   * InvalidRequest, если промежуток времени некорректен
   */
-  ReportID CreateReport(1: ReportRequest request, 2: ReportType report_type) throws (1: PartyNotFound ex1, 2: ShopNotFound ex2, 3: InvalidRequest ex3)
+  ReportID CreateReport(
+    1: ReportRequest request,
+    3: ReportType report_type,
+
+    // drop
+    2: ReportTypeLegacy report_type_legacy
+  ) throws (1: PartyNotFound ex1, 2: ShopNotFound ex2, 3: InvalidRequest ex3)
 
   /**
   * Получить список отчетов по магазину за указанный промежуток времени
