@@ -10,7 +10,7 @@ typedef domain.PartyID PartyID
 typedef domain.ShopID ShopID
 typedef domain.FileID FileID
 typedef i64 ReportID
-typedef string ReportType
+typedef string ReportType_OBSOLETE
 typedef string URL
 
 /**
@@ -47,7 +47,7 @@ struct ReportRequest {
 
 struct StatReportRequest {
     1: required ReportRequest request
-    2: optional list<ReportType> report_types
+    2: optional list<ReportType_OBSOLETE> report_types_OBSOLETE
     3: optional string continuation_token
 }
 
@@ -84,7 +84,7 @@ struct Report {
     2: required PartyID party_id
     3: required ReportTimeRange time_range
     4: required Timestamp created_at
-    5: required ReportType report_type
+    5: required ReportType_OBSOLETE report_type_OBSOLETE
     6: required ReportStatus status
     7: optional list<FileMeta> files
     8: optional ShopID shop_id
@@ -131,7 +131,7 @@ service Reporting {
   * ShopNotFound, если shop не найден
   * InvalidRequest, если промежуток времени некорректен
   */
-  ReportID CreateReport(1: ReportRequest request, 2: ReportType report_type) throws (1: PartyNotFound ex1, 2: ShopNotFound ex2, 3: InvalidRequest ex3)
+  ReportID CreateReport(1: ReportRequest request, 2: ReportType_OBSOLETE report_type_OBSOLETE) throws (1: PartyNotFound ex1, 2: ShopNotFound ex2, 3: InvalidRequest ex3)
 
   /**
   * Получить список отчетов по магазину за указанный промежуток времени
